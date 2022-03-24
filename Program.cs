@@ -19,30 +19,25 @@ namespace Napilnik2
 
             warehouse.Delive(iPhone12, 10);
             warehouse.Delive(iPhone11, 1);
-
-            
-            warehouse.Show(); //
-            //Вывод всех товаров на складе с их остатком
+          
+            warehouse.Show(); 
 
             Cart cart = shop.Cart();
             cart.Add(iPhone12, 4);
-            //cart.Add(iPhone11, 3); //при такой ситуации возникает ошибка так, как нет нужного количества товара на складе
-            Console.WriteLine();
+            cart.Add(iPhone11, 3); 
+
             warehouse.Show();
 
-            //Вывод всех товаров в корзине
 
             Console.WriteLine(cart.Order().Paylink);
 
-            cart.Add(iPhone12, 9); //Ошибка, после заказа со склада убираются заказанные товары
-
-            Console.ReadLine();
+            cart.Add(iPhone12, 9); 
         }
     }
 
     public class Good
     {
-        private string _label;
+        private readonly string _label;
 
         public Good(string label)
         {
@@ -109,14 +104,11 @@ namespace Napilnik2
 
     public class Shop
     {
-        private Warehouse _warehouse; 
+        private readonly Warehouse _warehouse; 
 
         public Shop(Warehouse warehouse)
         {
-            if (warehouse == null)
-                throw new ArgumentNullException(nameof(warehouse));
-
-            _warehouse = warehouse;
+            _warehouse = warehouse ?? throw new ArgumentNullException(nameof(warehouse));
         }
 
         public Warehouse Warehouse => _warehouse;
@@ -130,7 +122,7 @@ namespace Napilnik2
     public class Cart
     {
         private readonly Dictionary<Good, int> _goodsStock;
-        private Shop _shop;
+        private readonly Shop _shop;
 
         public Cart(Shop shop)
         {
@@ -138,7 +130,7 @@ namespace Napilnik2
             _shop = shop;
         }
 
-        public void Add(Good good, int count) //Дубляж получется?
+        public void Add(Good good, int count) //Дубляж получется? вынести это в интерфейс?
         {
             if (good == null)
                 throw new ArgumentNullException(nameof(good));
@@ -149,12 +141,13 @@ namespace Napilnik2
             if (_goodsStock.ContainsKey(good))
             {
                 _goodsStock[good] += count;
-                _shop.Warehouse.Remove(good, count);// Проверить на раочесть
-                return;
+                _shop.Warehouse.Remove(good, count);
             }
-
-            _goodsStock.Add(good, count);
-            _shop.Warehouse.Remove(good, count);//  Проверить на раочесть
+            else
+            {
+                _goodsStock.Add(good, count);
+                _shop.Warehouse.Remove(good, count);
+            }
         }
 
         public Order Order()
