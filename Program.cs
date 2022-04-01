@@ -10,9 +10,9 @@ namespace CleanCode4
     {
         static void Main(string[] args)
         {
-            int _armySize = 10;
-            int _coinCount = 10;
-            string _name = "Vladislav";
+            int armySize = 10;
+            int coinCount = 10;
+            string name = "Vladislav";
         }
     }
 }
